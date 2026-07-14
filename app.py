@@ -157,6 +157,15 @@ def login():
 
     return render_template("login.html")
 
+
+@app.route("/tentang")
+def tentang():
+
+    if "login" not in session:
+        return redirect("/login")
+
+    return render_template("tentang.html")
+
 @app.route("/users")
 def users():
     if "login" not in session:
