@@ -1,8 +1,21 @@
+# Python
 __pycache__/
 *.pyc
-.env
+*.pyo
+*.pyd
 venv/
-.env/
-uploads/
-.idea/
+.env
+
+# VS Code
 .vscode/
+
+# LocalStack
+localstack/
+volume/
+
+# Upload
+uploads/
+
+# OS
+.DS_Store
+Thumbs.db
