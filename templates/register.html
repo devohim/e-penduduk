@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>Register | E-Penduduk</title>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+
+<style>
+
+*{
+font-family:'Segoe UI',sans-serif;
+}
+
+body{
+
+background:linear-gradient(135deg,#0d6efd,#198754);
+
+min-height:100vh;
+
+display:flex;
+
+justify-content:center;
+
+align-items:center;
+
+padding:40px;
+
+}
+
+.register-card{
+
+width:560px;
+
+border:none;
+
+border-radius:25px;
+
+background:#fff;
+
+box-shadow:0 15px 40px rgba(0,0,0,.2);
+
+}
+
+.logo{
+
+width:90px;
+
+height:90px;
+
+background:#198754;
+
+color:white;
+
+border-radius:50%;
+
+display:flex;
+
+justify-content:center;
+
+align-items:center;
+
+margin:auto;
+
+font-size:40px;
+
+}
+
+.form-control,
+.form-select{
+
+height:50px;
+
+border-radius:12px;
+
+}
+
+.input-group-text{
+
+background:white;
+
+}
+
+.btn-success{
+
+height:50px;
+
+border-radius:12px;
+
+font-weight:bold;
+
+}
+
+.role-card{
+
+background:#f8f9fa;
+
+border-radius:15px;
+
+padding:15px;
+
+}
+
+.role-card i{
+
+font-size:25px;
+
+color:#198754;
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="card register-card">
+
+<div class="card-body p-5">
+
+<div class="text-center mb-4">
+
+<div class="logo">
+
+<i class="bi bi-person-plus-fill"></i>
+
+</div>
+
+<h3 class="mt-3 fw-bold">
+
+Registrasi Pengguna
+
+</h3>
+
+<p class="text-muted">
+
+Silakan lengkapi data berikut.
+
+</p>
+
+</div>
+
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+
+<div class="alert alert-danger">
+
+{{ messages[0] }}
+
+</div>
+
+{% endif %}
+{% endwith %}
+
+<form method="POST">
+
+<div class="mb-3">
+
+<label class="fw-semibold">
+
+Nama Lengkap
+
+</label>
+
+<div class="input-group">
+
+<span class="input-group-text">
+
+<i class="bi bi-person"></i>
+
+</span>
+
+<input
+
+type="text"
+
+name="nama"
+
+class="form-control"
+
+placeholder="Masukkan Nama"
+
+required>
+
+</div>
+
+</div>
+
+<div class="mb-3">
+
+<label class="fw-semibold">
+
+Username
+
+</label>
+
+<div class="input-group">
+
+<span class="input-group-text">
+
+<i class="bi bi-person-badge"></i>
+
+</span>
+
+<input
+
+type="text"
+
+name="username"
+
+class="form-control"
+
+placeholder="Masukkan Username"
+
+required>
+
+</div>
+
+</div>
+
+<div class="mb-3">
+
+<label class="fw-semibold">
+
+Password
+
+</label>
+
+<div class="input-group">
+
+<span class="input-group-text">
+
+<i class="bi bi-lock"></i>
+
+</span>
+
+<input
+
+type="password"
+
+name="password"
+
+id="password"
+
+class="form-control"
+
+placeholder="Masukkan Password"
+
+required>
+
+<button
+
+class="btn btn-outline-secondary"
+
+type="button"
+
+onclick="showPassword()">
+
+<i class="bi bi-eye" id="icon"></i>
+
+</button>
+
+</div>
+
+</div>
+
+<div class="mb-4">
+
+<label class="fw-semibold">
+
+Pilih Role
+
+</label>
+
+<select
+
+name="role"
+
+class="form-select"
+
+required>
+
+<option value="">-- Pilih Role --</option>
+
+<option value="Operator Desa">
+
+🏢 Operator Desa
+
+</option>
+
+<option value="Petugas Pelayanan">
+
+📄 Petugas Pelayanan
+
+</option>
+
+<option value="Kepala Desa">
+
+📊 Kepala Desa
+
+</option>
+
+</select>
+
+</div>
+
+<button class="btn btn-success w-100">
+
+<i class="bi bi-person-check-fill"></i>
+
+Daftar Sekarang
+
+</button>
+
+</form>
+
+<hr>
+
+<div class="alert alert-warning">
+
+<h6>
+
+<i class="bi bi-exclamation-circle-fill"></i>
+
+Informasi
+
+</h6>
+
+<ul class="mb-0">
+
+<li>Akun tidak langsung aktif.</li>
+
+<li>Status awal adalah <b>Pending</b>.</li>
+
+<li>Administrator akan melakukan verifikasi.</li>
+
+<li>Role dapat diubah Administrator.</li>
+
+</ul>
+
+</div>
+
+<div class="role-card">
+
+<h5 class="mb-3">
+
+Hak Akses Role
+
+</h5>
+
+<div class="mb-3">
+
+<i class="bi bi-building"></i>
+
+<b>Operator Desa</b>
+
+<p class="text-muted mb-0">
+
+Mengelola data penduduk.
+
+</p>
+
+</div>
+
+<div class="mb-3">
+
+<i class="bi bi-file-earmark-text"></i>
+
+<b>Petugas Pelayanan</b>
+
+<p class="text-muted mb-0">
+
+Mengelola dokumen administrasi.
+
+</p>
+
+</div>
+
+<div>
+
+<i class="bi bi-bar-chart-line"></i>
+
+<b>Kepala Desa</b>
+
+<p class="text-muted mb-0">
+
+Melihat dashboard dan laporan.
+
+</p>
+
+</div>
+
+</div>
+
+<div class="text-center mt-4">
+
+Sudah punya akun?
+
+<a href="/login">
+
+Login
+
+</a>
+
+</div>
+
+<div class="text-center mt-3">
+
+<small class="text-muted">
+
+© 2026 E-Penduduk
+
+</small>
+
+</div>
+
+</div>
+
+</div>
+
+<script>
+
+function showPassword(){
+
+let x=document.getElementById("password");
+let i=document.getElementById("icon");
+
+if(x.type==="password"){
+
+x.type="text";
+i.className="bi bi-eye-slash";
+
+}else{
+
+x.type="password";
+i.className="bi bi-eye";
+
+}
+
+}
+
+</script>
+
+</body>
+
+</html>

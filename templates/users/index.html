@@ -1,0 +1,122 @@
+{% extends "layout.html" %}
+
+{% block title %}Manajemen User{% endblock %}
+
+{% block content %}
+
+<div class="card shadow">
+
+    <div class="card-header bg-primary text-white">
+
+        <h4 class="mb-0">
+            <i class="bi bi-people-fill"></i>
+            Manajemen User
+        </h4>
+
+    </div>
+
+    <div class="card-body">
+
+        <table class="table table-hover">
+
+            <thead>
+
+                <tr>
+
+                    <th>Nama</th>
+                    <th>Username</th>
+                    <th>Role</th>
+                    <th>Status</th>
+                    <th width="250">Aksi</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+            {% for u in users %}
+
+                <tr>
+
+                    <td>{{ u.nama }}</td>
+
+                    <td>{{ u.username }}</td>
+
+                    <td>
+
+                        <span class="badge bg-info">
+
+                            {{ u.role }}
+
+                        </span>
+
+                    </td>
+
+                    <td>
+
+                        {% if u.status=="Pending" %}
+
+                            <span class="badge bg-warning">
+
+                                Pending
+
+                            </span>
+
+                        {% elif u.status=="Aktif" %}
+
+                            <span class="badge bg-success">
+
+                                Aktif
+
+                            </span>
+
+                        {% else %}
+
+                            <span class="badge bg-danger">
+
+                                Ditolak
+
+                            </span>
+
+                        {% endif %}
+
+                    </td>
+
+                    <td>
+
+                    {% if u.status=="Pending" %}
+
+                        <a
+                        href="/users/approve/{{u.username}}"
+                        class="btn btn-success btn-sm">
+
+                            ✔ Setujui
+
+                        </a>
+
+                        <a
+                        href="/users/reject/{{u.username}}"
+                        class="btn btn-danger btn-sm">
+
+                            ✖ Tolak
+
+                        </a>
+
+                    {% endif %}
+
+                    </td>
+
+                </tr>
+
+            {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+{% endblock %}

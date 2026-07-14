@@ -1,0 +1,85 @@
+{% extends "layout.html" %}
+
+{% block title %}Semua Dokumen{% endblock %}
+
+{% block content %}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h3 class="fw-bold">📁 Semua Dokumen</h3>
+        <p class="text-muted mb-0">Daftar seluruh dokumen yang tersimpan</p>
+    </div>
+    <a href="/dokumen/upload" class="btn btn-primary">
+        <i class="bi bi-cloud-upload me-2"></i>Upload Dokumen
+    </a>
+</div>
+
+<!-- Kartu Statistik Sesuai Tema -->
+<div class="row mb-4 g-3">
+    <div class="col-md-4">
+        <div class="card p-4 text-center">
+            <h6 class="text-muted mb-2">Total Dokumen</h6>
+            <h2 class="fw-bold text-primary">{{ jumlah_dokumen }}</h2>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card p-4 text-center">
+            <h6 class="text-muted mb-2">Dokumen PDF</h6>
+            <h2 class="fw-bold text-primary">{{ total_pdf }}</h2>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card p-4 text-center">
+            <h6 class="text-muted mb-2">File Gambar</h6>
+            <h2 class="fw-bold text-primary">{{ total_image }}</h2>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-body p-4">
+        <table class="table table-hover align-middle">
+            <thead class="table-primary">
+                <tr>
+                    <th>Nama Penduduk</th>
+                    <th>Jenis Dokumen</th>
+                    <th>Nama File</th>
+                    <th>Tanggal Upload</th>
+                    <th width="150">Aksi</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if dokumen %}
+                    {% for d in dokumen %}
+                    <tr>
+                        <td>{{ d.nama_penduduk }}</td>
+                        <td>{{ d.jenis_dokumen }}</td>
+                        <td><code class="text-muted">{{ d.filename }}</code></td>
+                        <td>{{ d.tanggal_upload }}</td>
+                        <td>
+                            <!-- Tombol Download -->
+                            <a href="/download/{{ d.filename }}" class="btn btn-outline-primary btn-sm me-1" title="Download">
+                                <i class="bi bi-download"></i>
+                            </a>
+                            <!-- Tombol Hapus (Sudah ada tautan + konfirmasi) -->
+                            <a href="/dokumen/hapus/{{ d.id }}" class="btn btn-outline-danger btn-sm" title="Hapus"
+                               onclick="return confirm('Yakin ingin menghapus dokumen ini? Tindakan ini tidak bisa dibatalkan!')">
+                                <i class="bi bi-trash"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                {% else %}
+                <tr>
+                    <td colspan="5" class="text-center py-5 text-muted">
+                        <i class="bi bi-folder-x fs-2 d-block mb-2"></i>
+                        Belum ada dokumen yang diunggah
+                    </td>
+                </tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% endblock %}

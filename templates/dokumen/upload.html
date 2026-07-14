@@ -1,0 +1,58 @@
+{% extends "layout.html" %}
+
+{% block title %}Upload Dokumen{% endblock %}
+
+{% block content %}
+
+<div class="card">
+    <div class="card-header" style="background: linear-gradient(135deg, #0d6efd, #4f46e5); color: white; border: none; border-radius: 18px 18px 0 0;">
+        <h4 class="mb-0 fw-bold">
+            <i class="bi bi-cloud-upload me-2"></i>Upload Dokumen
+        </h4>
+    </div>
+
+    <div class="card-body p-4">
+        <form method="POST" enctype="multipart/form-data">
+            
+            <div class="mb-4">
+                <label class="form-label fw-semibold">Nama Penduduk</label>
+                <select class="form-select" name="nik_penduduk" required>
+                    <option value="">-- Pilih Penduduk --</option>
+                    {% for p in penduduk %}
+                    <option value="{{ p.nik }}">{{ p.nama }} (NIK: {{ p.nik }})</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="mb-4">
+                <label class="form-label fw-semibold">Jenis Dokumen</label>
+                <select class="form-select" name="jenis_id" required>
+                    <option value="">-- Pilih Jenis Dokumen --</option>
+                    {% for j in jenis %}
+                    <option value="{{ j.id }}">{{ j.nama }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="mb-4">
+                <label class="form-label fw-semibold">Pilih File</label>
+                <input 
+                    type="file" 
+                    class="form-control" 
+                    name="file_dokumen" 
+                    accept=".jpg,.jpeg,.png,.pdf,.doc,.docx"
+                    required>
+                <small class="text-muted">Format yang didukung: Gambar, PDF, Word</small>
+            </div>
+
+            <button type="submit" class="btn btn-primary">
+                <i class="bi bi-upload me-2"></i>Upload Dokumen
+            </button>
+            <a href="/dokumen" class="btn btn-outline-primary ms-2">
+                <i class="bi bi-arrow-left me-2"></i>Kembali
+            </a>
+        </form>
+    </div>
+</div>
+
+{% endblock %}

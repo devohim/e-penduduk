@@ -1,0 +1,223 @@
+{% extends "layout.html" %}
+
+{% block title %}Jenis Dokumen{% endblock %}
+
+{% block content %}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h3 class="fw-bold">Jenis Dokumen</h3>
+    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalTambah">
+        <i class="bi bi-plus-circle me-2"></i>Tambah Jenis
+    </button>
+</div>
+
+<div class="card">
+    <div class="card-body p-4">
+        <table class="table table-hover align-middle" id="tabelJenis">
+            <thead class="table-primary">
+                <tr>
+                    <th width="80">No</th>
+                    <th>Nama Jenis Dokumen</th>
+                    <th width="150">Aksi</th>
+                </tr>
+            </thead>
+            <tbody id="isiTabel">
+                <tr>
+                    <td colspan="3" class="text-center py-4">
+                        <div class="spinner-border text-primary" role="status"></div>
+                        <p class="mt-2 text-muted">Memuat data...</p>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Modal Tambah -->
+<div class="modal fade" id="modalTambah" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header" style="background: linear-gradient(135deg, #0d6efd, #4f46e5); color: white; border: none;">
+                <h5 class="modal-title">Tambah Jenis Dokumen</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <label class="form-label fw-semibold">Nama Jenis</label>
+                <input type="text" class="form-control" id="inputNama" placeholder="Contoh: KTP, Kartu Keluarga" required>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                <button type="button" class="btn btn-primary" id="btnSimpan">
+                    <span id="teksSimpan">Simpan</span>
+                    <span id="loadingSimpan" class="spinner-border spinner-border-sm ms-2 d-none"></span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Ubah -->
+<div class="modal fade" id="modalUbah" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header" style="background: linear-gradient(135deg, #0d6efd, #4f46e5); color: white; border: none;">
+                <h5 class="modal-title">Ubah Jenis Dokumen</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="inputIdUbah">
+                <label class="form-label fw-semibold">Nama Jenis</label>
+                <input type="text" class="form-control" id="inputNamaUbah" required>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                <button type="button" class="btn btn-primary" id="btnUbah">
+                    <span id="teksUbah">Simpan Perubahan</span>
+                    <span id="loadingUbah" class="spinner-border spinner-border-sm ms-2 d-none"></span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// ==== FUNGSI MUAT DATA ====
+function muatData() {
+    fetch('/dokumen/jenis/data') // Pastikan alamat sama dengan rute di Flask
+        .then(res => {
+            if (!res.ok) throw new Error("Gagal terhubung ke server");
+            return res.json();
+        })
+        .then(data => {
+            let html = '';
+            if (data.length === 0) {
+                html = `
+                <tr>
+                    <td colspan="3" class="text-center text-muted py-4">
+                        <i class="bi bi-inbox fs-3 d-block mb-2"></i>
+                        Belum ada data jenis dokumen
+                    </td>
+                </tr>`;
+            } else {
+                data.forEach((item, index) => {
+                    html += `
+                    <tr>
+                        <td>${index + 1}</td>
+                        <td>${item.nama}</td>
+                        <td>
+                            <button class="btn btn-outline-primary btn-sm me-1" onclick="bukaUbah(${item.id}, '${item.nama}')">
+                                <i class="bi bi-pencil"></i>
+                            </button>
+                            <button class="btn btn-outline-danger btn-sm" onclick="hapusData(${item.id})">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </td>
+                    </tr>`;
+                });
+            }
+            document.getElementById('isiTabel').innerHTML = html;
+        })
+        .catch(err => {
+            document.getElementById('isiTabel').innerHTML = `
+            <tr>
+                <td colspan="3" class="text-center text-danger py-4">
+                    <i class="bi bi-exclamation-triangle fs-3 d-block mb-2"></i>
+                    ${err.message}
+                </td>
+            </tr>`;
+        });
+}
+
+// ==== SIMPAN DATA BARU ====
+document.getElementById('btnSimpan').addEventListener('click', () => {
+    const nama = document.getElementById('inputNama').value.trim();
+    if (!nama) return alert('Nama tidak boleh kosong!');
+
+    // Tampilkan loading
+    document.getElementById('teksSimpan').classList.add('d-none');
+    document.getElementById('loadingSimpan').classList.remove('d-none');
+
+    fetch('/dokumen/jenis/simpan', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+        body: `nama=${encodeURIComponent(nama)}`
+    })
+    .then(res => res.json())
+    .then(hasil => {
+        if (hasil.sukses) {
+            bootstrap.Modal.getOrCreateInstance(document.getElementById('modalTambah')).hide();
+            document.getElementById('inputNama').value = '';
+            muatData();
+            alert('Berhasil ditambahkan!');
+        } else {
+            alert('Gagal: ' + hasil.pesan);
+        }
+    })
+    .catch(err => alert('Kesalahan: ' + err.message))
+    .finally(() => {
+        // Sembunyikan loading
+        document.getElementById('teksSimpan').classList.remove('d-none');
+        document.getElementById('loadingSimpan').classList.add('d-none');
+    });
+});
+
+// ==== BUKA MODAL UBAH ====
+function bukaUbah(id, nama) {
+    document.getElementById('inputIdUbah').value = id;
+    document.getElementById('inputNamaUbah').value = nama;
+    new bootstrap.Modal(document.getElementById('modalUbah')).show();
+}
+
+// ==== SIMPAN PERUBAHAN ====
+document.getElementById('btnUbah').addEventListener('click', () => {
+    const id = document.getElementById('inputIdUbah').value;
+    const nama = document.getElementById('inputNamaUbah').value.trim();
+    if (!nama) return alert('Nama tidak boleh kosong!');
+
+    document.getElementById('teksUbah').classList.add('d-none');
+    document.getElementById('loadingUbah').classList.remove('d-none');
+
+    fetch(`/dokumen/jenis/ubah/${id}`, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+        body: `nama=${encodeURIComponent(nama)}`
+    })
+    .then(res => res.json())
+    .then(hasil => {
+        if (hasil.sukses) {
+            bootstrap.Modal.getOrCreateInstance(document.getElementById('modalUbah')).hide();
+            muatData();
+            alert('Berhasil diubah!');
+        } else {
+            alert('Gagal: ' + hasil.pesan);
+        }
+    })
+    .catch(err => alert('Kesalahan: ' + err.message))
+    .finally(() => {
+        document.getElementById('teksUbah').classList.remove('d-none');
+        document.getElementById('loadingUbah').classList.add('d-none');
+    });
+});
+
+// ==== HAPUS DATA ====
+function hapusData(id) {
+    if (confirm('Yakin ingin menghapus jenis ini?')) {
+        fetch(`/dokumen/jenis/hapus/${id}`, {method: 'POST'})
+        .then(res => res.json())
+        .then(hasil => {
+            if (hasil.sukses) {
+                muatData();
+                alert('Berhasil dihapus!');
+            } else {
+                alert('Gagal: ' + hasil.pesan);
+            }
+        })
+        .catch(err => alert('Kesalahan: ' + err.message));
+    }
+}
+
+// Panggil saat halaman siap
+document.addEventListener('DOMContentLoaded', muatData);
+</script>
+
+{% endblock %}

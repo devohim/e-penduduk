@@ -1,0 +1,442 @@
+{% extends "layout.html" %}
+
+{% block title %}
+Dashboard
+{% endblock %}
+
+{% block content %}
+
+<style>
+    :root {
+        --navy-900: #0b1f3a;
+        --navy-800: #10284a;
+        --navy-700: #16345e;
+        --navy-600: #1d4278;
+        --navy-500: #2a5aa0;
+        --gold-500: #c8a24a;
+        --bg-soft: #f4f6fa;
+    }
+
+    .page-header-title {
+        font-weight: 700;
+        color: var(--navy-900);
+        letter-spacing: .3px;
+    }
+    .page-header-subtitle {
+        color: #6c757d;
+        font-size: .95rem;
+    }
+    .page-header-title .bi {
+        color: var(--gold-500);
+    }
+
+    /* ===== Stat Cards ===== */
+    .stat-card {
+        border: none;
+        border-radius: .85rem;
+        color: #fff;
+        overflow: hidden;
+        position: relative;
+        background: linear-gradient(135deg, var(--navy-700), var(--navy-900));
+        border-left: 4px solid var(--gold-500);
+        transition: transform .2s ease, box-shadow .2s ease;
+    }
+    .stat-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 1rem 1.75rem rgba(11,31,58,.28) !important;
+    }
+    .stat-card .bi {
+        font-size: 2.4rem;
+        opacity: .25;
+        position: absolute;
+        right: 1.1rem;
+        top: 1rem;
+    }
+    .stat-card h6 {
+        letter-spacing: .6px;
+        text-transform: uppercase;
+        font-size: .78rem;
+        opacity: .85;
+        margin-bottom: .35rem;
+    }
+    .stat-card h2 {
+        font-weight: 700;
+        margin-bottom: 0;
+    }
+
+    /* ===== Cards umum ===== */
+    .card-modern {
+        border: none;
+        border-radius: .85rem;
+        box-shadow: 0 .25rem 1rem rgba(11,31,58,.08);
+    }
+    .card-header-navy {
+        background-color: var(--navy-800);
+        color: #fff;
+        font-weight: 600;
+        border-top-left-radius: .85rem;
+        border-top-right-radius: .85rem;
+        letter-spacing: .3px;
+    }
+
+    /* ===== Info Sistem ===== */
+    .system-info-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: .85rem 1.1rem;
+        border-radius: .65rem;
+        background-color: var(--bg-soft);
+        border-left: 3px solid var(--navy-500);
+        margin-bottom: .65rem;
+    }
+    .system-info-item i {
+        font-size: 1.15rem;
+        margin-right: .6rem;
+        color: var(--navy-600);
+    }
+    .status-dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        display: inline-block;
+        margin-right: 6px;
+        background-color: #1cc88a;
+        animation: pulse 1.8s infinite;
+    }
+    @keyframes pulse {
+        0%   { box-shadow: 0 0 0 0 rgba(28,200,138,.5); }
+        70%  { box-shadow: 0 0 0 8px rgba(28,200,138,0); }
+        100% { box-shadow: 0 0 0 0 rgba(28,200,138,0); }
+    }
+
+    /* ===== Tabel: gaya nyaman / lega ===== */
+    .table-modern thead th {
+        background-color: var(--bg-soft);
+        border-bottom: 2px solid var(--navy-600);
+        font-size: .82rem;
+        text-transform: uppercase;
+        letter-spacing: .5px;
+        color: var(--navy-800);
+        padding-top: 1rem;
+        padding-bottom: 1rem;
+        white-space: nowrap;
+    }
+    .table-modern tbody td {
+        padding-top: 1.05rem;
+        padding-bottom: 1.05rem;
+        vertical-align: middle;
+    }
+    .table-modern tbody tr {
+        transition: background-color .15s ease;
+    }
+    .table-modern tbody tr:hover {
+        background-color: #eef2f9 !important;
+    }
+
+    .ktp-thumb {
+        width: 52px;
+        height: 52px;
+        object-fit: cover;
+        border-radius: .5rem;
+        border: 1px solid #dee2e6;
+        cursor: pointer;
+        transition: transform .15s ease;
+    }
+    .ktp-thumb:hover {
+        transform: scale(1.08);
+    }
+
+    .btn-navy {
+        background-color: var(--navy-700);
+        border-color: var(--navy-700);
+        color: #fff;
+    }
+    .btn-navy:hover {
+        background-color: var(--navy-800);
+        border-color: var(--navy-800);
+        color: #fff;
+    }
+
+    .search-box .input-group-text {
+        background-color: #fff;
+        border-right: none;
+    }
+    .search-box .form-control {
+        border-left: none;
+    }
+    .search-box .form-control:focus {
+        box-shadow: none;
+        border-color: #ced4da;
+    }
+</style>
+
+<!-- ================= HEADER ================= -->
+<div class="mb-4">
+    <h2 class="page-header-title mb-0">
+        <i class="bi bi-bank2"></i>
+        Dashboard
+    </h2>
+    <p class="page-header-subtitle mb-0">Sistem Informasi E-Penduduk</p>
+</div>
+
+<!-- ================= CARD STATISTIK ================= -->
+<div class="row g-3 mb-4">
+
+    <div class="col-md-3 col-sm-6">
+        <div class="card stat-card shadow">
+            <div class="card-body">
+                <i class="bi bi-people-fill"></i>
+                <h6>Total Penduduk</h6>
+                <h2>{{ penduduk|length }}</h2>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3 col-sm-6">
+        <div class="card stat-card shadow">
+            <div class="card-body">
+                <i class="bi bi-file-earmark-fill"></i>
+                <h6>Total Dokumen</h6>
+                <h2>{{ files|length }}</h2>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3 col-sm-6">
+        <div class="card stat-card shadow">
+            <div class="card-body">
+                <i class="bi bi-person-standing"></i>
+                <h6>Laki-laki</h6>
+                <h2>{{ laki }}</h2>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3 col-sm-6">
+        <div class="card stat-card shadow">
+            <div class="card-body">
+                <i class="bi bi-person-dress"></i>
+                <h6>Perempuan</h6>
+                <h2>{{ perempuan }}</h2>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- ================= STATISTIK SISTEM ================= -->
+<div class="card card-modern mb-4">
+    <div class="card-header card-header-navy">
+        <i class="bi bi-bar-chart-fill me-1"></i> Statistik Sistem
+    </div>
+    <div class="card-body">
+        <div class="row align-items-center">
+
+            <div class="col-md-6 text-center mb-4 mb-md-0">
+                <div style="width:300px;height:300px;margin:auto;">
+                    <canvas id="grafikPenduduk"></canvas>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <h6 class="text-muted mb-3 text-uppercase" style="font-size:.8rem; letter-spacing:.5px;">
+                    Informasi Sistem
+                </h6>
+
+                <div class="system-info-item">
+                    <span><i class="bi bi-cloud-fill"></i> Bucket S3</span>
+                    <span class="badge" style="background-color: var(--navy-700);">{{ bucket }}</span>
+                </div>
+
+                <div class="system-info-item">
+                    <span><i class="bi bi-database-fill"></i> Database</span>
+                    <span class="badge bg-success">SQLite</span>
+                </div>
+
+                <div class="system-info-item">
+                    <span><i class="bi bi-hdd-network-fill"></i> Storage</span>
+                    <span class="badge" style="background-color: var(--gold-500); color:#1b1b1b;">LocalStack S3</span>
+                </div>
+
+                <div class="system-info-item">
+                    <span><i class="bi bi-file-earmark-text-fill"></i> Total File</span>
+                    <span class="badge bg-secondary">{{ files|length }}</span>
+                </div>
+
+                <div class="system-info-item">
+                    <span><i class="bi bi-broadcast"></i> Status Sistem</span>
+                    <span><span class="status-dot"></span>Online</span>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- ================= DATA PENDUDUK ================= -->
+<div class="card card-modern">
+
+    <div class="card-header card-header-navy">
+        <i class="bi bi-table me-1"></i> Data Penduduk
+    </div>
+
+    <div class="card-body">
+
+        <div class="row mb-3 g-2 align-items-center">
+
+            <div class="col-md-8">
+                <form method="GET" action="/">
+                    <div class="input-group search-box">
+                        <span class="input-group-text">
+                            <i class="bi bi-search"></i>
+                        </span>
+                        <input
+                            type="text"
+                            name="keyword"
+                            class="form-control"
+                            placeholder="Cari berdasarkan NIK atau Nama..."
+                            value="{{ keyword }}">
+                        <button class="btn btn-navy">
+                            Cari
+                        </button>
+                        <a href="/" class="btn btn-outline-secondary">
+                            Reset
+                        </a>
+                    </div>
+                </form>
+            </div>
+
+            <div class="col-md-4 text-md-end">
+                <a href="/tambah" class="btn btn-navy">
+                    <i class="bi bi-plus-circle-fill"></i>
+                    Tambah Penduduk
+                </a>
+            </div>
+
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-hover align-middle table-modern mb-0">
+
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>NIK</th>
+                    <th>Nama</th>
+                    <th>Jenis Kelamin</th>
+                    <th>Alamat</th>
+                    <th class="text-center">Foto KTP</th>
+                    <th class="text-center">Aksi</th>
+                </tr>
+                </thead>
+
+                <tbody>
+
+                {% for p in penduduk %}
+
+                <tr>
+
+                    <td>{{ loop.index }}</td>
+                    <td>{{ p.nik }}</td>
+                    <td>{{ p.nama }}</td>
+                    <td>
+                        {% if p.jenis_kelamin == "Laki-laki" %}
+                            <span class="badge rounded-pill" style="background-color: var(--navy-600);">{{ p.jenis_kelamin }}</span>
+                        {% else %}
+                            <span class="badge bg-danger rounded-pill">{{ p.jenis_kelamin }}</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ p.alamat }}</td>
+
+                    <td class="text-center">
+                        {% if p.ktp %}
+                            <a href="/download/{{ p.ktp }}" target="_blank" title="Lihat KTP">
+                                <img src="/download/{{ p.ktp }}" alt="KTP" class="ktp-thumb"
+                                     onerror="this.onerror=null;this.replaceWith(Object.assign(document.createElement('span'),{innerHTML:'<span class=&quot;btn btn-sm btn-outline-primary&quot;><i class=&quot;bi bi-eye-fill&quot;></i> Lihat</span>'}));">
+                            </a>
+                        {% else %}
+                            <span class="text-muted">-</span>
+                        {% endif %}
+                    </td>
+
+                    <td class="text-center">
+                        <a href="/edit/{{ p.nik }}"
+                           class="btn btn-warning btn-sm text-white"
+                           title="Edit">
+                            <i class="bi bi-pencil-square"></i>
+                        </a>
+
+                        <a href="/hapus/{{ p.nik }}"
+                           class="btn btn-danger btn-sm"
+                           title="Hapus"
+                           onclick="return confirm('Hapus data?')">
+                            <i class="bi bi-trash"></i>
+                        </a>
+                    </td>
+
+                </tr>
+
+                {% else %}
+
+                <tr>
+                    <td colspan="7" class="text-center text-muted py-5">
+                        <i class="bi bi-inbox"></i> Tidak ada data penduduk.
+                    </td>
+                </tr>
+
+                {% endfor %}
+
+                </tbody>
+
+            </table>
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    const laki = Number("{{ laki }}");
+    const perempuan = Number("{{ perempuan }}");
+
+    const canvas = document.getElementById("grafikPenduduk");
+
+    if (!canvas) {
+        console.error("Canvas tidak ditemukan");
+        return;
+    }
+
+    new Chart(canvas, {
+        type: "pie",
+        data: {
+            labels: ["Laki-laki", "Perempuan"],
+            datasets: [{
+                label: "Jumlah Penduduk",
+                data: [laki, perempuan],
+                backgroundColor: [
+                    "#16345e",
+                    "#c8a24a"
+                ]
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: "bottom"
+                },
+                title: {
+                    display: true,
+                    text: "Statistik Jenis Kelamin Penduduk"
+                }
+            }
+        }
+    });
+
+});
+</script>
+
+{% endblock %}

@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{% block title %}Dashboard | E-Penduduk{% endblock %}</title>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+
+<style>
+* {
+    font-family: Segoe UI, Tahoma, sans-serif;
+}
+
+body {
+    background: #f4f6fb;
+    font-family: Segoe UI, Tahoma, sans-serif;
+    overflow-x: hidden; /* Cegah gulir horizontal saat sidebar tertutup */
+}
+
+/* ===== SIDEBAR - Bisa dibuka/tutup ===== */
+.sidebar {
+    width: 260px;
+    height: 100vh;
+    position: fixed;
+    left: 0;
+    top: 0;
+    background: linear-gradient(180deg, #0d6efd, #4f46e5);
+    color: white;
+    box-shadow: 5px 0 20px rgba(0, 0, 0, 0.15);
+    transition: transform 0.3s ease; /* Efek geser halus */
+    z-index: 999;
+}
+
+/* Kondisi sidebar tertutup */
+.sidebar.tertutup {
+    transform: translateX(-100%);
+}
+
+.logo {
+    padding: 25px;
+    text-align: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.logo i {
+    font-size: 45px;
+}
+
+.logo h3 {
+    margin-top: 10px;
+    font-weight: bold;
+}
+
+.profile {
+    text-align: center;
+    padding: 20px;
+}
+
+.avatar {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    background: white;
+    color: #0d6efd;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 32px;
+    margin: auto;
+    margin-bottom: 10px;
+}
+
+.profile h6 {
+    margin-bottom: 2px;
+}
+
+.profile small {
+    color: #dbe9ff;
+}
+
+.menu {
+    margin-top: 15px;
+}
+
+.menu a, .menu-toggle {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: white;
+    text-decoration: none;
+    padding: 14px 25px;
+    transition: all 0.3s ease;
+    border-left: 3px solid transparent;
+}
+
+.menu-toggle {
+    cursor: pointer;
+}
+
+.menu a:hover, .menu-toggle:hover {
+    background: rgba(255, 255, 255, 0.15);
+    padding-left: 35px;
+    border-left-color: white;
+}
+
+.menu a.active {
+    background: rgba(255, 255, 255, 0.2);
+    border-left-color: white;
+    font-weight: 500;
+}
+
+.submenu {
+    display: flex !important;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 25px 12px 55px !important;
+    color: #dbe9ff !important;
+    font-size: 15px;
+    border-left: none !important;
+}
+
+.submenu:hover {
+    background: rgba(255, 255, 255, 0.12);
+    color: white !important;
+    padding-left: 60px !important;
+}
+
+.menu a i {
+    font-size: 20px;
+}
+
+/* ===== KONTEN UTAMA - Menyesuaikan lebar sidebar ===== */
+.content {
+    margin-left: 260px;
+    padding: 30px;
+    transition: margin-left 0.3s ease; /* Ikut geser halus */
+}
+
+/* Saat sidebar tertutup, konten melebar penuh */
+.content.sidebar-tertutup {
+    margin-left: 0;
+}
+
+.topbar {
+    background: white;
+    padding: 18px 25px;
+    border-radius: 15px;
+    margin-bottom: 25px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 3px 15px rgba(0, 0, 0, 0.08);
+}
+
+/* Tombol geser/tutup sidebar */
+.tombol-sidebar {
+    border: none;
+    background: linear-gradient(135deg, #0d6efd, #4f46e5);
+    color: white;
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+    font-size: 20px;
+    transition: all 0.3s ease;
+}
+
+.tombol-sidebar:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(13, 110, 253, 0.3);
+}
+
+.card {
+    border: none;
+    border-radius: 18px;
+    box-shadow: 0 3px 15px rgba(0, 0, 0, 0.08);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(13, 110, 253, 0.15);
+}
+
+/* ===== WARNA SESUAI TEMA LOGIN ===== */
+.bg-primary {
+    background: linear-gradient(135deg, #0d6efd, #4f46e5) !important;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #0d6efd, #4f46e5);
+    border: none;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(13, 110, 253, 0.35);
+    background: linear-gradient(135deg, #0b5ed7, #4338ca);
+}
+
+.btn-outline-primary {
+    border-color: #0d6efd;
+    color: #0d6efd;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+}
+
+.btn-outline-primary:hover {
+    background: linear-gradient(135deg, #0d6efd, #4f46e5);
+    border-color: transparent;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(13, 110, 253, 0.35);
+}
+
+.form-control, .input-group-text, .form-select {
+    border-radius: 12px;
+}
+
+.text-primary {
+    color: #0d6efd !important;
+}
+
+.badge.bg-primary {
+    background: linear-gradient(135deg, #0d6efd, #4f46e5) !important;
+}
+
+.alert {
+    border-radius: 12px;
+}
+
+/* ===== RESPONSIF ===== */
+@media (max-width: 991.98px) {
+    .sidebar {
+        transform: translateX(-100%);
+    }
+    .sidebar.buka {
+        transform: translateX(0);
+    }
+    .content {
+        margin-left: 0;
+    }
+}
+</style>
+
+</head>
+
+<body>
+
+<div class="sidebar" id="sidebarUtama">
+    <div class="logo">
+        <i class="bi bi-person-vcard-fill"></i>
+        <h3>E-Penduduk</h3>
+    </div>
+
+    {% if session.get("login") %}
+    <div class="profile">
+        <div class="avatar">
+            <i class="bi bi-person-fill"></i>
+        </div>
+        <h6>{{ session.get("nama") }}</h6>
+        <small>{{ session.get("role") }}</small>
+    </div>
+    {% endif %}
+
+    <div class="menu">
+        <a href="/" class="{% if request.path == '/' %}active{% endif %}">
+            <i class="bi bi-speedometer2"></i>
+            Dashboard
+        </a>
+
+        <a href="/tambah" class="{% if request.path == '/tambah' %}active{% endif %}">
+            <i class="bi bi-person-plus-fill"></i>
+            Tambah Penduduk
+        </a>
+
+        {% if session.get("role") == "Administrator" %}
+        <a href="/users" class="{% if request.path == '/users' %}active{% endif %}">
+            <i class="bi bi-people-fill"></i>
+            Manajemen User
+        </a>
+        {% endif %}
+
+        <a class="menu-toggle" data-bs-toggle="collapse" href="#dokumenMenu">
+            <i class="bi bi-folder-fill"></i>
+            <span>Dokumen</span>
+            <i class="bi bi-chevron-down ms-auto"></i>
+        </a>
+
+        <div class="collapse" id="dokumenMenu">
+            <a href="/dokumen" class="submenu {% if request.path == '/dokumen' %}active{% endif %}">
+                <i class="bi bi-files"></i>
+                Semua Dokumen
+            </a>
+            <a href="/dokumen/upload" class="submenu {% if request.path == '/dokumen/upload' %}active{% endif %}">
+                <i class="bi bi-cloud-upload"></i>
+                Upload Dokumen
+            </a>
+            <a href="/dokumen/jenis" class="submenu {% if request.path == '/dokumen/jenis' %}active{% endif %}">
+                <i class="bi bi-tags"></i>
+                Jenis Dokumen
+            </a>
+        </div>
+
+        <a href="/logout">
+            <i class="bi bi-box-arrow-right"></i>
+            Logout
+        </a>
+    </div>
+</div>
+
+<div class="content" id="kontenUtama">
+    <div class="topbar">
+        <div class="d-flex align-items-center gap-3">
+            <!-- Tombol geser/tutup sidebar -->
+            <button class="tombol-sidebar" id="tombolSidebar">
+                <i class="bi bi-list"></i>
+            </button>
+            <div>
+                <h4 class="mb-0">Dashboard E-Penduduk</h4>
+                <small class="text-muted">Sistem Informasi Kependudukan</small>
+            </div>
+        </div>
+
+        {% if session.get("login") %}
+        <div>
+            <span class="badge bg-primary fs-6">
+                {{ session.get("role") }}
+            </span>
+        </div>
+        {% endif %}
+    </div>
+
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    <div class="alert alert-danger shadow-sm">
+        {{ messages[0] }}
+    </div>
+    {% endif %}
+    {% endwith %}
+
+    {% block content %}
+    {% endblock %}
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+// Fungsi buka-tutup sidebar
+const sidebar = document.getElementById('sidebarUtama');
+const konten = document.getElementById('kontenUtama');
+const tombol = document.getElementById('tombolSidebar');
+
+tombol.addEventListener('click', function() {
+    // Geser sidebar ke kiri
+    sidebar.classList.toggle('tertutup');
+    // Sesuaikan lebar konten
+    konten.classList.toggle('sidebar-tertutup');
+    // Ganti ikon tombol
+    const ikon = tombol.querySelector('i');
+    ikon.classList.toggle('bi-list');
+    ikon.classList.toggle('bi-x-lg');
+});
+</script>
+
+</body>
+</html>

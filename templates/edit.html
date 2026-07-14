@@ -1,0 +1,123 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+<div class="card shadow">
+
+    <div class="card-header bg-warning text-dark">
+        <h3><i class="bi bi-pencil-square"></i> Edit Penduduk</h3>
+    </div>
+
+    <div class="card-body">
+
+        <form action="/update/{{ p.nik }}" method="POST" enctype="multipart/form-data">
+
+            <div class="mb-3">
+                <label class="form-label">NIK</label>
+                <input
+                    type="text"
+                    class="form-control"
+                    value="{{ p.nik }}"
+                    readonly>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Nama</label>
+                <input
+                    type="text"
+                    class="form-control"
+                    name="nama"
+                    value="{{ p.nama }}"
+                    required>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Jenis Kelamin</label>
+
+                <select
+                    name="jenis_kelamin"
+                    class="form-select"
+                    required>
+
+                    <option value="Laki-laki"
+                    {% if p.jenis_kelamin=="Laki-laki" %}selected{% endif %}>
+                        Laki-laki
+                    </option>
+
+                    <option value="Perempuan"
+                    {% if p.jenis_kelamin=="Perempuan" %}selected{% endif %}>
+                        Perempuan
+                    </option>
+
+                </select>
+
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Alamat</label>
+
+                <textarea
+                    class="form-control"
+                    name="alamat"
+                    rows="3"
+                    required>{{ p.alamat }}</textarea>
+            </div>
+
+            <div class="mb-3">
+
+                <label class="form-label">
+                    KTP Saat Ini
+                </label>
+
+                <br>
+
+                {% if p.ktp %}
+
+                    <a
+                        href="/download/{{ p.ktp }}"
+                        target="_blank">
+
+                        {{ p.ktp }}
+
+                    </a>
+
+                {% else %}
+
+                    <span class="text-muted">
+                        Belum ada file
+                    </span>
+
+                {% endif %}
+
+            </div>
+
+            <div class="mb-3">
+
+                <label class="form-label">
+                    Ganti Foto KTP (Opsional)
+                </label>
+
+                <input
+                    type="file"
+                    class="form-control"
+                    name="ktp"
+                    accept=".jpg,.jpeg,.png,.pdf">
+
+            </div>
+
+            <button class="btn btn-warning">
+                <i class="bi bi-save"></i>
+                Update
+            </button>
+
+            <a href="/" class="btn btn-secondary">
+                Kembali
+            </a>
+
+        </form>
+
+    </div>
+
+</div>
+
+{% endblock %}
